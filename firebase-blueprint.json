@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System user with roles",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "driver", "hospital", "traffic_police"] },
+        "hospitalId": { "type": "string", "description": "Linked hospital if role is hospital" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Ambulance": {
+      "title": "Ambulance",
+      "description": "Ambulance vehicle details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "plateNumber": { "type": "string" },
+        "driverId": { "type": "string" },
+        "status": { "type": "string", "enum": ["available", "busy", "offline"] },
+        "currentLocation": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        }
+      },
+      "required": ["id", "plateNumber", "status"]
+    },
+    "Hospital": {
+      "title": "Hospital",
+      "description": "Hospital facility details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "availableBeds": { "type": "number" }
+      },
+      "required": ["id", "name", "location"]
+    },
+    "AmbulanceRequest": {
+      "title": "AmbulanceRequest",
+      "description": "Emergency request lifecycle",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "ambulanceId": { "type": "string" },
+        "driverId": { "type": "string" },
+        "hospitalId": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING", "ACCEPTED", "IGNORED", "COMPLETED"] },
+        "priority": { "type": "number", "description": "1-5, 5 being highest" },
+        "patientInfo": { "type": "string" },
+        "pickupLocation": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "eta": { "type": "number", "description": "Estimated time in minutes" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "ambulanceId", "status", "hospitalId"]
+    },
+    "TrafficSignal": {
+      "title": "TrafficSignal",
+      "description": "Smart traffic signal state",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "state": { "type": "string", "enum": ["RED", "GREEN", "YELLOW", "AUTO"] },
+        "isEmergencyOverride": { "type": "boolean" }
+      },
+      "required": ["id", "state"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": { "schema": "User", "description": "User profiles" },
+    "/ambulances/{id}": { "schema": "Ambulance", "description": "Ambulance registry" },
+    "/hospitals/{id}": { "schema": "Hospital", "description": "Hospital registry" },
+    "/requests/{id}": { "schema": "AmbulanceRequest", "description": "Emergency requests" },
+    "/signals/{id}": { "schema": "TrafficSignal", "description": "Traffic signals" }
+  }
+}

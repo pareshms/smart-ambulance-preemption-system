@@ -1,0 +1,7 @@
+{
+  "name": "Smart Ambulance Management System",
+  "description": "A real-time emergency response platform featuring a control room dashboard, driver mobile interface, and automated traffic signal priority simulation.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
